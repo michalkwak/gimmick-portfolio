@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Michał Kwak</title>
+</head>
+<body>
+
+<div style="min-height: calc(100svh - 16px); display: flex; flex-direction: column; justify-content: center">
+<center>
+<h1>Michał Kwak</h1>
+
+<p style="max-width: 40em; margin: 1em auto">
+Hi, I'm Michał, a Computer and Data Science student at the University of Helsinki.
+I build things with Python, SQL, JavaScript and C#, from data pipelines and machine learning
+to web apps and games. I'm also the co-founder of Syllabuss, a study planning platform for students.
+</p>
+
+<p><b>Wanna hire me?</b></p>
+
+<div id="buttons">
+<button id="yes" type="button">Yes</button>
+<button id="no" type="button">No</button>
+</div>
+
+<div id="projects" hidden>
+<p>Good choice.</p>
+
+<h2>Projects</h2>
+<p>
+<a href="https://github.com/michalkwak/Gaussian-State-Tomography-of-Hawking-Unruh-Toy-Radiation">Gaussian State Tomography of Hawking/Unruh Toy Radiation</a> (2026 – present)<br>
+Gaussian quantum-state simulation and tomography pipeline that models simplified Hawking/Unruh radiation as a two-mode squeezed state, with joint, homodyne and heterodyne detection schemes.
+</p>
+<p>
+<a href="https://github.com/michalkwak/Face-Recognition">Face Recognition</a> (2026)<br>
+Eigenface face recognition in Python using a cyclic Jacobi eigenvalue algorithm I implemented from scratch. Includes unit and end-to-end tests.
+</p>
+<p>
+Syllabuss (2025 – present)<br>
+I co-founded this academic study planning platform in the Helsinki Incubator Program. I work on the backend and do student outreach across faculties.
+</p>
+<p>
+<a href="https://github.com/michalkwak/Finnish-Municipal-Economic-Resilience-Index">Finnish Municipal Economic Resilience Index</a> (2026, hackathon)<br>
+Python ETL pipeline that merges three Finnish open datasets into an economic resilience index for every municipality, built from income, employment and population.
+</p>
+<p>
+<a href="https://github.com/michalkwak/Cybersecurity-Project">Cybersecurity Project</a> (2026)<br>
+Python web app for a cybersecurity course that demonstrates common web vulnerabilities, such as CSRF, and how to fix them.
+</p>
+<p>
+<a href="https://github.com/michalkwak/DNA-Sequence-Analysis">DNA Sequence Analysis</a> (2025)<br>
+Python tools for DNA/RNA sequence analysis, including k-mer indexing, codon translation, frequency analysis and Markov chain models.
+</p>
+<p>
+<a href="https://github.com/michalkwak/gym-exercise-similarity-finder">Gym Exercise Similarity Finder</a> (2026)<br>
+Recommends similar gym exercises based on movement pattern, muscle groups and equipment, and explains why each one matches.
+</p>
+<p>
+<a href="https://github.com/michalkwak/Kana-Quest">Kana Quest</a> (2023 – 2024)<br>
+2D quiz game in Unity (C#) for learning and practising Japanese.
+</p>
+<p>
+<a href="https://github.com/michalkwak/The-Lunar-Retribution">The Lunar Retribution</a><br>
+Game made in Unity (C#).
+</p>
+<p>
+<a href="https://github.com/michalkwak/Full-Stack-Open">Full Stack Open</a><br>
+My exercise solutions for the University of Helsinki Full Stack Open course (React, Node.js).
+</p>
+
+<h2>Contact</h2>
+<p>
+<a href="mailto:michal.kwak2806@gmail.com">michal.kwak2806@gmail.com</a> ·
+<a href="https://www.linkedin.com/in/michalkwak">LinkedIn</a> ·
+<a href="https://github.com/michalkwak">GitHub</a>
+</p>
+</div>
+</center>
+</div>
+
+<script>
+const yes = document.getElementById('yes');
+const no = document.getElementById('no');
+const buttons = document.getElementById('buttons');
+const projects = document.getElementById('projects');
+
+const RANGE = 120;  // how close (px) the cursor can get before No runs away
+const MARGIN = 8;
+let noClicks = 0;
+
+function moveTo(x, y) {
+  const maxX = window.innerWidth - no.offsetWidth - MARGIN;
+  const maxY = window.innerHeight - no.offsetHeight - MARGIN;
+  no.style.position = 'fixed';
+  no.style.left = Math.min(Math.max(x, MARGIN), maxX) + 'px';
+  no.style.top = Math.min(Math.max(y, MARGIN), maxY) + 'px';
+}
+
+function distanceTo(px, py) {
+  const r = no.getBoundingClientRect();
+  return Math.hypot(r.left + r.width / 2 - px, r.top + r.height / 2 - py);
+}
+
+// Jump somewhere random, preferably far away from the given point
+function teleport(awayX, awayY) {
+  for (let i = 0; i < 50; i++) {
+    moveTo(Math.random() * window.innerWidth, Math.random() * window.innerHeight);
+    if (awayX === undefined || distanceTo(awayX, awayY) > RANGE * 2) return;
+  }
+}
+
+no.addEventListener('click', (e) => {
+  noClicks++;
+  teleport(e.clientX, e.clientY);
+});
+
+document.addEventListener('mousemove', (e) => {
+  if (noClicks < 2 || buttons.hidden) return;
+  const dist = distanceTo(e.clientX, e.clientY);
+  if (dist > RANGE) return;
+
+  const r = no.getBoundingClientRect();
+  const angle = dist === 0
+    ? Math.random() * 2 * Math.PI
+    : Math.atan2(r.top + r.height / 2 - e.clientY, r.left + r.width / 2 - e.clientX);
+  const step = RANGE - dist + 10;
+  moveTo(r.left + Math.cos(angle) * step, r.top + Math.sin(angle) * step);
+
+  // Cornered against the edge of the window: escape somewhere else
+  if (distanceTo(e.clientX, e.clientY) < RANGE) teleport(e.clientX, e.clientY);
+});
+
+// Touch screens have no cursor to run from, so dodge the tap instead
+no.addEventListener('touchstart', (e) => {
+  if (noClicks < 2) return;
+  e.preventDefault();
+  const t = e.touches[0];
+  teleport(t.clientX, t.clientY);
+}, { passive: false });
+
+window.addEventListener('resize', () => {
+  if (no.style.position === 'fixed') moveTo(no.offsetLeft, no.offsetTop);
+});
+
+yes.addEventListener('click', () => {
+  buttons.hidden = true;
+  projects.hidden = false;
+});
+</script>
+
+</body>
+</html>
