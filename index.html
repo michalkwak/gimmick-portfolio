@@ -143,10 +143,15 @@ document.addEventListener('mousemove', (e) => {
   if (distanceTo(e.clientX, e.clientY) < RANGE) teleport(e.clientX, e.clientY);
 });
 
-// Touch screens have no cursor to run from, so dodge the tap instead
+// Touch screens have no cursor to run from, so dodge the tap and shrink a bit each time
+const baseFontSize = parseFloat(getComputedStyle(no).fontSize);
+let noScale = 1;
+
 no.addEventListener('touchstart', (e) => {
   if (noClicks < 2) return;
   e.preventDefault();
+  noScale = Math.max(noScale * 0.8, 0.25);
+  no.style.fontSize = baseFontSize * noScale + 'px';
   const t = e.touches[0];
   teleport(t.clientX, t.clientY);
 }, { passive: false });
