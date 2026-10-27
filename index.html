@@ -5,9 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Michał Kwak</title>
 <style>
-/* Bigger buttons on touch screens only */
+/* Touch screens: bigger buttons, and the plain rectangular desktop look
+   instead of the rounded mobile one (mostly iOS Safari) */
 @media (pointer: coarse) {
-  #buttons button { font-size: 1.2em; }
+  #buttons button {
+    -webkit-appearance: none;
+    appearance: none;
+    font-size: 1em;
+    color: #000;
+    background: #efefef;
+    border: 1px solid #767676;
+    border-radius: 2px;
+    padding: 2px 8px;
+  }
+  #buttons button:active { background: #e5e5e5; }
 }
 </style>
 </head>
