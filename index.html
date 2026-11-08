@@ -21,6 +21,10 @@
   #buttons button:active { background: #e5e5e5; }
 }
 
+/* Breathing room between sections, and between entries inside them */
+#content h2 { margin: 3em 0 1em; }
+#content p { margin: 1.5em 0; }
+
 /* Name in the top-left corner, links back to the start screen */
 #home {
   position: fixed;
@@ -69,13 +73,16 @@
 <div style="min-height: calc(100svh - 16px); box-sizing: border-box; padding-top: 3em; display: flex; flex-direction: column; justify-content: center">
 <center>
 
-<p style="max-width: 40em; margin: 1em auto">
-Hi, I'm Michał, a Computer and Data Science student at the University of Helsinki.
+<p style="font-size: large; max-width: 40em; margin: 1em auto">
+Hi, I'm Michał!
+</p>
+<p style="font-size: large; max-width: 40em; margin: 1em auto">
+I'm a Computer and Data Science student at the University of Helsinki.
 I build things with Python, SQL, JavaScript and C#, from data pipelines and machine learning
 to web apps and games. I'm also the co-founder of Syllabuss, a study planning platform for students.
 </p>
 
-<p><b>Wanna hire me?</b></p>
+<p><b style="font-size: large;">Wanna hire me?</b></p>
 
 <div id="buttons">
 <button id="yes" type="button">Yes</button>
