@@ -81,9 +81,6 @@
   margin: 6px 0 0;
   padding: 6px 12px;
   background: Canvas;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 #menu li { margin: 6px 0; }
 #menu .close-label { display: none; }
@@ -91,6 +88,16 @@
 /* Narrow screens (phones, small tablets): the text runs full width, so a
    dropdown would cover it. Open the menu as a full-screen page instead.
    The page underneath doesn't move, and you're back where you were on close. */
+/* Space at the top so the content never starts under the name or the menu */
+#main { padding-top: 3em; }
+
+/* Large screens: give the name and the menu some room from the edges */
+@media (min-width: 56.01em) {  /* .01 so it doesn't overlap the max-width: 56em rules */
+  #home { top: 32px; left: 40px; }
+  #menu { top: 36px; right: 40px; }
+  #main { padding-top: 5em; }
+}
+
 @media (max-width: 56em) {
   #menu summary { position: relative; z-index: 1; }
   #menu[open] summary::before { display: none; }
@@ -104,7 +111,6 @@
     padding: 4em 16px 2em;
     border: none;
     border-radius: 0;
-    box-shadow: none;
     overflow-y: auto;
     overscroll-behavior: contain;
     display: flex;
@@ -136,7 +142,7 @@
 </ul>
 </details>
 
-<div style="min-height: calc(100svh - 16px); box-sizing: border-box; padding-top: 3em; display: flex; flex-direction: column; justify-content: center">
+<div id="main" style="min-height: calc(100svh - 16px); box-sizing: border-box; display: flex; flex-direction: column; justify-content: center">
 <center>
 
 <p style="font-size: large; max-width: 40em; margin: 1em auto">
