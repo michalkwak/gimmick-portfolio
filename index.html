@@ -49,7 +49,19 @@
   background: Canvas;
   padding: 2px 4px;
 }
-#menu summary { cursor: pointer; }
+#menu summary { cursor: pointer; list-style: none; line-height: 1.2; }
+/* Own arrow instead of the browser's: Safari swaps between two glyphs of
+   different heights, which made "Menu" jump when opened. Rotating one glyph
+   doesn't affect layout. */
+#menu summary::-webkit-details-marker { display: none; }
+#menu summary::before {
+  content: '\25B6\FE0E';  /* FE0E: plain text arrow, not the iOS emoji */
+  display: inline-block;
+  font-size: 0.7em;
+  margin-right: 0.4em;
+  transition: transform 0.15s;
+}
+#menu[open] summary::before { transform: rotate(90deg); }
 #menu ul { list-style: none; margin: 4px 0 0; padding: 0; }
 #menu li { margin: 2px 0; }
 </style>
