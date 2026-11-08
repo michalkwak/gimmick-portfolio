@@ -20,9 +20,35 @@
   }
   #buttons button:active { background: #e5e5e5; }
 }
+
+/* Plain menu in the top-right corner, for people who don't want to play along */
+#menu {
+  position: fixed;
+  top: 8px;
+  right: 8px;
+  z-index: 10;
+  text-align: right;
+  background: Canvas;
+  padding: 2px 4px;
+}
+#menu summary { cursor: pointer; }
+#menu ul { list-style: none; margin: 4px 0 0; padding: 0; }
+#menu li { margin: 2px 0; }
 </style>
 </head>
 <body>
+
+<details id="menu">
+<summary>Menu</summary>
+<ul>
+<li><a href="#projects">Projects</a></li>
+<li><a href="#experience">Experience</a></li>
+<li><a href="#skills">Skills</a></li>
+<!-- TODO: once cv.pdf is in the repo, change this to <a href="cv.pdf">CV (PDF)</a> -->
+<li><a href="#experience">CV</a></li>
+<li><a href="#contact">Contact</a></li>
+</ul>
+</details>
 
 <div style="min-height: calc(100svh - 16px); display: flex; flex-direction: column; justify-content: center">
 <center>
@@ -41,10 +67,10 @@ to web apps and games. I'm also the co-founder of Syllabuss, a study planning pl
 <button id="no" type="button">No</button>
 </div>
 
-<div id="projects" style="max-width: 40em; margin: 0 auto" hidden>
-<p>Good choice.</p>
+<div id="content" style="max-width: 40em; margin: 0 auto" hidden>
+<p id="greeting">Good choice.</p>
 
-<h2>My work</h2>
+<h2 id="projects">My work</h2>
 <p>
 <a href="https://github.com/michalkwak/Gaussian-State-Tomography-of-Hawking-Unruh-Toy-Radiation">Gaussian State Tomography of Hawking/Unruh Toy Radiation</a> (2026 - present)<br>
 Gaussian quantum-state simulation and tomography pipeline that models simplified Hawking/Unruh radiation as a two-mode squeezed state, with joint, homodyne and heterodyne detection schemes.
@@ -74,7 +100,7 @@ Recommends similar gym exercises based on movement pattern, muscle groups and eq
 Game made in Unity (C#). My first coding and design project.
 </p>
 
-<h2>My experience</h2>
+<h2 id="experience">My experience</h2>
 <p>
 <b>Co-founder and Developer</b>, Syllabuss, Helsinki Incubator Program (09/2025 - present)<br>
 Co-founded a student platform for academic planning and navigating degree structures. I build backend tools and do student outreach across faculties.
@@ -93,13 +119,13 @@ I create social media content about student life in Finland and promote Finnish 
 Helped international students with programming, debugging and technical problems during lab sessions.
 </p>
 
-<h2>Skills</h2>
+<h2 id="skills">Skills</h2>
 <p>some software development here and there</p>
 <p>some data science</p>
 <p>not being a jerk</p>
 
 
-<h2>Contact</h2>
+<h2 id="contact">Contact</h2>
 <p>
 <a href="mailto:michal.kwak2806@gmail.com">michal.kwak2806@gmail.com</a> ·
 <a href="https://www.linkedin.com/in/michalkwak">LinkedIn</a> ·
@@ -113,7 +139,9 @@ Helped international students with programming, debugging and technical problems
 const yes = document.getElementById('yes');
 const no = document.getElementById('no');
 const buttons = document.getElementById('buttons');
-const projects = document.getElementById('projects');
+const content = document.getElementById('content');
+const greeting = document.getElementById('greeting');
+const menu = document.getElementById('menu');
 
 const RANGE = 120;  // how close (px) the cursor can get before No runs away
 const MARGIN = 8;
@@ -122,9 +150,18 @@ let noClicks = 0;
 function moveTo(x, y) {
   const maxX = window.innerWidth - no.offsetWidth - MARGIN;
   const maxY = window.innerHeight - no.offsetHeight - MARGIN;
+  x = Math.min(Math.max(x, MARGIN), maxX);
+  y = Math.min(Math.max(y, MARGIN), maxY);
+
+  // Never hide under the menu: if we'd overlap it, drop below it instead
+  const m = menu.getBoundingClientRect();
+  if (x + no.offsetWidth > m.left - MARGIN && y < m.bottom + MARGIN) {
+    y = Math.min(m.bottom + MARGIN, maxY);
+  }
+
   no.style.position = 'fixed';
-  no.style.left = Math.min(Math.max(x, MARGIN), maxX) + 'px';
-  no.style.top = Math.min(Math.max(y, MARGIN), maxY) + 'px';
+  no.style.left = x + 'px';
+  no.style.top = y + 'px';
 }
 
 function distanceTo(px, py) {
@@ -146,7 +183,7 @@ no.addEventListener('click', (e) => {
 });
 
 document.addEventListener('mousemove', (e) => {
-  if (noClicks < 2 || buttons.hidden) return;
+  if (noClicks < 1 || buttons.hidden || menu.open) return;
   const dist = distanceTo(e.clientX, e.clientY);
   if (dist > RANGE) return;
 
@@ -166,7 +203,7 @@ const baseFontSize = parseFloat(getComputedStyle(no).fontSize);
 let noScale = 1;
 
 no.addEventListener('touchstart', (e) => {
-  if (noClicks < 2) return;
+  if (noClicks < 1) return;
   e.preventDefault();
   noScale = Math.max(noScale * 0.8, 0.25);
   no.style.fontSize = baseFontSize * noScale + 'px';
@@ -178,10 +215,30 @@ window.addEventListener('resize', () => {
   if (no.style.position === 'fixed') moveTo(no.offsetLeft, no.offsetTop);
 });
 
-yes.addEventListener('click', () => {
+function reveal(message) {
+  if (!content.hidden) return;
+  greeting.textContent = message;
   buttons.hidden = true;
-  projects.hidden = false;
+  content.hidden = false;
+}
+
+yes.addEventListener('click', () => reveal('Good choice.'));
+
+// Using the menu counts as a yes, just a less polite one
+menu.addEventListener('click', (e) => {
+  if (!e.target.closest('a')) return;
+  reveal('Skipped the question? Fair enough.');
+  menu.open = false;
 });
+
+// Deep links like /#projects open straight to the content
+if (location.hash) {
+  const target = document.getElementById(location.hash.slice(1));
+  if (target && content.contains(target)) {
+    reveal('Skipped the question? Fair enough.');
+    target.scrollIntoView();
+  }
+}
 </script>
 
 </body>
