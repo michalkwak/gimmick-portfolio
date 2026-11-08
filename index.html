@@ -26,6 +26,9 @@
 /* Breathing room between sections, and between entries inside them */
 #content h2 { margin: 3em 0 1em; }
 #content p { margin: 1.5em 0; }
+/* "Good choice." answers "Wanna hire me?", so keep them close. The negative
+   margin cancels most of the question's own 1em bottom margin (they collapse). */
+#content #greeting { margin-top: -0.6em; }
 
 /* Name in the top-left corner, links back to the start screen */
 #home {
@@ -48,10 +51,16 @@
   right: 8px;
   z-index: 10;
   text-align: right;
+}
+/* Only the label gets a background, so there's no white band around the open list */
+#menu summary {
+  display: inline-block;
+  cursor: pointer;
+  list-style: none;
+  line-height: 1.2;
   background: Canvas;
   padding: 2px 4px;
 }
-#menu summary { cursor: pointer; list-style: none; line-height: 1.2; }
 /* Own arrow instead of the browser's: Safari swaps between two glyphs of
    different heights, which made "Menu" jump when opened. Rotating one glyph
    doesn't affect layout. */
@@ -64,8 +73,50 @@
   transition: transform 0.15s;
 }
 #menu[open] summary::before { transform: rotate(90deg); }
-#menu ul { list-style: none; margin: 4px 0 0; padding: 0; }
-#menu li { margin: 2px 0; }
+/* The open list floats over the page, so make it look like a dropdown
+   rather than a white patch covering the intro */
+#menu ul {
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 6px 12px;
+  background: Canvas;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+#menu li { margin: 6px 0; }
+#menu .close-label { display: none; }
+
+/* Narrow screens (phones, small tablets): the text runs full width, so a
+   dropdown would cover it. Open the menu as a full-screen page instead.
+   The page underneath doesn't move, and you're back where you were on close. */
+@media (max-width: 56em) {
+  #menu summary { position: relative; z-index: 1; }
+  #menu[open] summary::before { display: none; }
+  #menu[open] .menu-label { display: none; }
+  #menu[open] .close-label { display: inline; }
+
+  #menu ul {
+    position: fixed;
+    inset: 0;
+    margin: 0;
+    padding: 4em 16px 2em;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5em;
+  }
+  #menu li { margin: 0.6em 0; }
+
+  /* Don't let the page behind scroll while the menu is open */
+  html:has(#menu[open]) { overflow: hidden; }
+}
 </style>
 </head>
 <body>
@@ -73,7 +124,7 @@
 <h1 id="home"><a href="index.html">Michał Kwak</a></h1>
 
 <details id="menu">
-<summary>Menu</summary>
+<summary><span class="menu-label">Menu</span><span class="close-label">Close</span></summary>
 <ul>
 <li><a href="#projects">Projects</a></li>
 <li><a href="#experience">Experience</a></li>
@@ -121,7 +172,7 @@ I co-founded this academic study planning platform in the Helsinki Incubator Pro
 </p>
 <p>
 <a href="https://github.com/michalkwak/Finnish-Municipal-Economic-Resilience-Index">Finnish Municipal Economic Resilience Index</a> (2026, hackathon)<br>
-Python ETL pipeline that merges three Finnish open datasets into an economic resilience index for every municipality, built from income, employment and population.
+Python ETL pipeline that merges three Finnish open datasets into an economic resilience index for every municipality.
 </p>
 <p>
 <a href="https://github.com/michalkwak/gym-exercise-similarity-finder">Gym Exercise Similarity Finder</a> (2026)<br>
@@ -264,6 +315,14 @@ menu.addEventListener('click', (e) => {
   if (!e.target.closest('a')) return;
   reveal('Skipped the question? Fair enough.');
   menu.open = false;
+});
+
+// Close the menu when tapping/clicking anywhere else, or pressing Escape
+document.addEventListener('click', (e) => {
+  if (menu.open && !menu.contains(e.target)) menu.open = false;
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') menu.open = false;
 });
 
 // Name in the corner: back to the start screen. Reload the current page without
