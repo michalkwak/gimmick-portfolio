@@ -27,9 +27,12 @@
 /* Breathing room between sections, and between entries inside them */
 #content h2 { margin: 3em 0 1em; }
 #content p { margin: 1.5em 0; }
-/* "Good choice." answers "Wanna hire me?", so keep them close. The negative
-   margin cancels most of the question's own 1em bottom margin (they collapse). */
-#content #greeting { margin-top: -0.6em; }
+/* The intro is centred on the first screen by script (see centerIntro), so it
+   sits in the same spot before and after the rest of the page is revealed */
+#intro { box-sizing: border-box; }
+#slot { display: grid; }
+#slot > * { grid-area: 1 / 1; }
+#greeting { margin: 0; visibility: hidden; }
 
 /* Name in the top-left corner, links back to the start screen */
 #home {
@@ -89,13 +92,13 @@
    dropdown would cover it. Open the menu as a full-screen page instead.
    The page underneath doesn't move, and you're back where you were on close. */
 /* Space at the top so the content never starts under the name or the menu */
-#main { padding-top: 3em; }
+#main { --top: 3em; padding-top: var(--top); }
 
 /* Large screens: give the name and the menu some room from the edges */
 @media (min-width: 56.01em) {  /* .01 so it doesn't overlap the max-width: 56em rules */
   #home { top: 32px; left: 40px; }
   #menu { top: 36px; right: 40px; }
-  #main { padding-top: 5em; }
+  #main { --top: 5em; }
 }
 
 @media (max-width: 56em) {
@@ -141,8 +144,11 @@
 </ul>
 </details>
 
-<div id="main" style="min-height: calc(100svh - 16px); box-sizing: border-box; display: flex; flex-direction: column; justify-content: center">
+<div id="main">
 <center>
+
+<!-- The intro keeps its position when the rest of the page is revealed below it -->
+<div id="intro">
 
 <p style="font-size: large; max-width: 40em; margin: 1em auto">
 Hi, I'm Michał!
@@ -154,13 +160,17 @@ I'm a Computer and Data Science student at the University of Helsinki.
 
 <p><b style="font-size: large;">Wanna hire me?</b></p>
 
+<!-- Buttons and greeting share one grid cell, so swapping them doesn't move anything -->
+<div id="slot">
 <div id="buttons">
 <button id="yes" type="button">Yes</button>
 <button id="no" type="button">No</button>
 </div>
+<p id="greeting">Good choice.</p>
+</div>
+</div>
 
 <div id="content" style="max-width: 40em; margin: 0 auto" hidden>
-<p id="greeting">Good choice.</p>
 
 <h2 id="projects">My work</h2>
 <p>
@@ -301,7 +311,7 @@ no.addEventListener('click', (e) => {
 });
 
 document.addEventListener('mousemove', (e) => {
-  if (noClicks < 1 || buttons.hidden || menu.open) return;
+  if (noClicks < 1 || !content.hidden || menu.open) return;
   const dist = distanceTo(e.clientX, e.clientY);
   if (dist > RANGE) return;
 
@@ -334,10 +344,25 @@ window.addEventListener('resize', () => {
   if (no.style.position === 'fixed') moveTo(no.offsetLeft, no.offsetTop);
 });
 
+// Centre the intro vertically in the first screen. Done only until the content
+// is revealed, so the text then stays where it was and the sections follow below it
+const intro = document.getElementById('intro');
+function centerIntro() {
+  if (!content.hidden) return;
+  intro.style.paddingTop = '0px';
+  const top = parseFloat(getComputedStyle(document.getElementById('main')).paddingTop);
+  const free = window.innerHeight - 16 - top - intro.offsetHeight;
+  intro.style.paddingTop = Math.max(free / 2, 0) + 'px';
+}
+centerIntro();
+window.addEventListener('load', centerIntro);
+window.addEventListener('resize', centerIntro);
+
 function reveal(message) {
   if (!content.hidden) return;
   greeting.textContent = message;
-  buttons.hidden = true;
+  buttons.style.visibility = 'hidden';
+  greeting.style.visibility = 'visible';
   content.hidden = false;
 }
 
