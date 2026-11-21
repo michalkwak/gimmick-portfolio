@@ -136,6 +136,7 @@
 <details id="menu">
 <summary><span class="menu-label">Menu</span><span class="close-label">Close</span></summary>
 <ul>
+<li><a href="#research">Research</a></li>
 <li><a href="#projects">Projects</a></li>
 <li><a href="#experience">Experience</a></li>
 <li><a href="#skills">Skills</a></li>
@@ -158,7 +159,7 @@ I'm a Computer and Data Science student at the University of Helsinki.
 </p>
 <p style="font-size: large; max-width: 40em; margin: 1em auto">I build things.</p>
 
-<p><b style="font-size: large;">Wanna hire me?</b></p>
+<p><b style="font-size: large;">Wanna know more?</b></p>
 
 <!-- Buttons and greeting share one grid cell, so swapping them doesn't move anything -->
 <div id="slot">
@@ -172,45 +173,59 @@ I'm a Computer and Data Science student at the University of Helsinki.
 
 <div id="content" style="max-width: 40em; margin: 0 auto" hidden>
 
-<h2 id="projects">My work</h2>
+<h2 id="research">Research</h2>
 <p>
 Hypoglycemia prediction from CGM data (2026 - present)<br>
 Research at the University of Helsinki comparing published Random Forest, XGBoost and BiLSTM models for predicting glucose below 70 mg/dL in type 1 diabetes, using identical data, labels and splits on the public CITY dataset. Extending it with participant-level cross-validation, external validation on OhioT1DM and an alarm-level metric (false alarms per patient-day).
 </p>
+
 <p>
 <a href="https://github.com/michalkwak/gaussian-state-tomography">Gaussian State Tomography of Hawking/Unruh Toy Radiation</a> (2026 - present)<br>
 Team research project. Python simulation and tomography pipeline that models the radiation as a two-mode squeezed state, with a modular engine for joint, homodyne and heterodyne measurements.
 </p>
+
+<h2 id="projects">Projects</h2>
 <p>
-Steam Decline Watch (2026)<br>
-Team project predicting Steam games' collapses. A calibrated random forest with grouped CV reached ROC-AUC 0.84 vs 0.59 for the baseline, and the top 10% watch list caught 56% of collapses in a monthly backtest. Deployed as a live website with an interactive dashboard.
+<a href="https://github.com/michalkwak/low-sight">LowSight</a> (2026)<br>
+Hackathon project (Junction, Meta glasses challenge): hypoglycemia alert system for drivers with type 1 diabetes, built for Meta Ray-Ban Display. Watches the CGM trend and a short-horizon forecast and gives escalating audio alerts. Live demo and simulator online.
 </p>
+
+<p>
+<a href="https://github.com/michalkwak/steam-decline-watch">Steam Decline Watch</a> (2026)<br>
+Team project predicting Steam games' collapses. A calibrated random forest with grouped CV reached ROC-AUC 0.84 vs 0.59 for the baseline. The top 10% watch list caught 56% of collapses in a monthly backtest. Deployed as a live website with an interactive dashboard.
+</p>
+
 <p>
 <a href="https://github.com/michalkwak/finnish-municipal-economic-resilience-index">Finnish Municipal Economic Resilience Index</a> (2026)<br>
 Python pipeline on the Statistics Finland API that scores 308 municipalities over 1995-2024 on recession resilience. Shipped as a CLI with uv, pytest, Ruff and GitHub Actions CI.
 </p>
+
 <p>
 <a href="https://github.com/michalkwak/face-recognition">Face recognition with eigenfaces</a> (2026)<br>
 Eigenfaces implemented from scratch in Python/NumPy with a Jacobi solver, reaching 87.5% accuracy. Tested with pytest (96% coverage) and documented in weekly reports for the AI and Algorithms lab course.
 </p>
+
 <p>
 Syllabuss (2025 - present)<br>
 Study-planning platform I co-founded in Helsinki Incubators. I build backend tools, including a scraper for university course data.
 </p>
+
 <p>
 <a href="https://github.com/michalkwak/gym-exercise-similarity-finder">Gym Exercise Similarity Finder</a> (2026)<br>
 Recommends similar gym exercises based on movement pattern, muscle groups and equipment, and explains why each one matches.
 </p>
+
 <p>
 <a href="https://github.com/michalkwak/kana-quest">Kana Quest</a> (2023 - 2024)<br>
 2D quiz game in Unity (C#) for learning and practising Japanese.
 </p>
+
 <p>
-<a href="https://github.com/michalkwak/The-Lunar-Retribution">The Lunar Retribution</a><br>
+<a href="https://github.com/michalkwak/The-Lunar-Retribution">The Lunar Retribution (2022)</a><br>
 Game made in Unity (C#). My first coding and design project.
 </p>
 
-<h2 id="experience">My experience</h2>
+<h2 id="experience">Experience</h2>
 <p>
 <b>Co-founder and Developer</b>, Syllabuss, Helsinki Incubators (09/2025 - present)<br>
 Co-founded a study-planning platform that helps students navigate degree structures. Built backend tools, including a scraper for university course data, using Git/GitHub in a team. Ran student outreach across faculties and used the feedback to guide the product.
